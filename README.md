@@ -1,4 +1,5 @@
 # Dimension-3
+<img width="640" alt="main_oAzMYoWwav" src="https://user-images.githubusercontent.com/35104213/234350060-bd721213-651e-497a-8f26-bdf0959dcc34.png">
 
 C++와 OpenGL을 이용한 3D 레이캐스트 구현입니다.
 
