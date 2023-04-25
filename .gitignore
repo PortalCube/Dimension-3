@@ -2,5 +2,4 @@
 include
 lib
 glut32.dll
-main.exe
 tempCodeRunnerFile.cpp
