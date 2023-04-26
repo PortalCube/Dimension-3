@@ -110,8 +110,9 @@ void drawRay() {
     float ra, rx, ry, xo, yo, distT;
     int count = 120, j = 0;
 
-    float deltaAngle = PI2 / count;
-    ra = pa - PI2 / 2;
+    float fov = PI / 3;
+    float deltaAngle = fov / count;
+    ra = pa - fov / 2;
 
     for (int i = 0; i < count; i++) {
         // 가로선
