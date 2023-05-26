@@ -110,7 +110,7 @@ void drawRay() {
     float ra, rx, ry, xo, yo, distT;
     int count = 120, j = 0;
 
-    float fov = PI / 3;
+    float fov = PI / 4;
     float deltaAngle = fov / count;
     ra = pa - fov / 2;
 
@@ -226,14 +226,13 @@ void drawRay() {
         float ca = pa - ra;
         if (ca < 0) {
             ca += 2 * PI;
-        }
-        if (ca > 2 * PI) {
+        } else if (ca > 2 * PI) {
             ca -= 2 * PI;
         }
 
         distT *= cos(ca);
 
-        float lineH = mapS * height3D / distT;
+        float lineH = mapS * 1.5 * height3D / distT;
         if (lineH > height3D) {
             lineH = height3D;
         }
@@ -257,7 +256,13 @@ void drawRay() {
 }
 
 void movePlayer() {
-    float speed = 0.25 / ((1 + keyWDown + keyADown + keySDown + keyDDown) * 3);
+    float speed = 0.8f;
+
+    int keyCount = keyWDown + keySDown + keyADown + keyDDown;
+
+    if (keyCount == 2) {
+        speed *= sqrt(2) / 2;
+    }
 
     if (keyWDown) {
         px += pdx * speed;
