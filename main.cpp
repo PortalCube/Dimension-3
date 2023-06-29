@@ -8,7 +8,7 @@
 #define PI3 3 * PI2
 #define WIDTH 1280
 #define HEIGHT 800
-#define DPI 80
+#define DPI 160
 
 // 플레이어 포지션
 float px, py, pdx, pdy, pidx, pidy, pa;
@@ -86,6 +86,48 @@ void drawWorldMap() {
             glEnd();
         }
     }
+}
+
+void drawText(float x, float y, const char* text) {
+    glColor3f(1.0f, 1.0f, 1.0f);
+    glRasterPos2f(x, y);
+    glutBitmapString(GLUT_BITMAP_HELVETICA_18, ((unsigned char*)text));
+}
+
+void drawDebugInfo() {
+    char text[100];
+
+    float x = 10;
+    float y = 420;
+    float yDelta = 20;
+
+    snprintf(text, 100, "Player X: %.2f", px);
+    drawText(x, y, text);
+    y += yDelta;
+
+    snprintf(text, 100, "Player Y: %.2f", py);
+    drawText(x, y, text);
+    y += yDelta;
+
+    float playerAngleDegree = pa * 180 / PI;
+    snprintf(text, 100, "Player Angle: %.1f", playerAngleDegree);
+    drawText(x, y, text);
+    y += yDelta;
+
+    drawText(x, y, "Player Input: ");
+    if (keyWDown) {
+        drawText(x + 110, y, "W");
+    }
+    if (keyADown) {
+        drawText(x + 140, y, "A");
+    }
+    if (keySDown) {
+        drawText(x + 170, y, "S");
+    }
+    if (keyDDown) {
+        drawText(x + 200, y, "D");
+    }
+    y += yDelta;
 }
 
 void drawBlock(int x, int y) {
@@ -289,6 +331,7 @@ void display() {
     drawWorldMap();
     drawRay();
     drawPlayer();
+    drawDebugInfo();
     glutSwapBuffers();
     glutPostRedisplay();
 }
@@ -338,8 +381,7 @@ void motion(int x, int y) {
     mouseY = y;
 
     // mouseY, deltaY는 사용되지 않음. (추후 3D Z축 구현시 사용)
-
-    pa += (float)deltaX / DPI;  // dpi 1000
+    pa += (float)deltaX / DPI;
 
     if (pa < 0) {
         pa += 2 * PI;
@@ -373,8 +415,9 @@ void init() {
     gluOrtho2D(0, WIDTH, HEIGHT, 0);
     mouseX = -1;
     mouseY = -1;
-    px = 200;
-    py = 300;
+    // 플레이어 포지션을 (3, 9)로 설정
+    px = mapS * (3 + 0.5f);
+    py = mapS * (9 + 0.5f);
     pdx = cos(pa);
     pdy = sin(pa) * -1;
 }
