@@ -2,6 +2,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/time.h>
 
 #define PI 3.141592
 #define PI2 PI / 2
@@ -9,6 +10,7 @@
 #define WIDTH 1280
 #define HEIGHT 800
 #define DPI 160
+#define FPS (float)1 / 60
 
 // 플레이어 포지션
 float px, py, pdx, pdy, pidx, pidy, pa;
@@ -21,6 +23,10 @@ bool keyDDown;
 
 // 마우스 로테이션
 int mouseX, mouseY;
+
+struct timeval lastTime;
+long timeElapse = 0;
+long gameTime = 0;
 
 // 월드 맵
 int mapX = 12, mapY = 12, mapS = 32;
@@ -100,6 +106,10 @@ void drawDebugInfo() {
     float x = 10;
     float y = 420;
     float yDelta = 20;
+
+    snprintf(text, 100, "FPS: %.1f", (float)1000 / timeElapse);
+    drawText(x, y, text);
+    y += yDelta;
 
     snprintf(text, 100, "Player X: %.2f", px);
     drawText(x, y, text);
@@ -298,13 +308,16 @@ void drawRay() {
 }
 
 void movePlayer() {
-    float speed = 0.8f;
+    float speed = 4;
 
     int keyCount = keyWDown + keySDown + keyADown + keyDDown;
 
     if (keyCount == 2) {
         speed *= sqrt(2) / 2;
     }
+
+    // 현재 프레임만큼 속도 보정
+    speed *= timeElapse / FPS;
 
     if (keyWDown) {
         px += pdx * speed;
@@ -324,9 +337,18 @@ void movePlayer() {
     }
 }
 
+void updateTick() {
+    struct timeval currentTime;
+    gettimeofday(&currentTime, NULL);
+    timeElapse = ((currentTime.tv_sec - lastTime.tv_sec) * 1000000 + currentTime.tv_usec - lastTime.tv_usec) / 1000;
+    gameTime += timeElapse;
+    lastTime = currentTime;
+}
+
 void display() {
     printf("");
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    updateTick();
     movePlayer();
     drawWorldMap();
     drawRay();
@@ -410,6 +432,7 @@ void initScreen() {
 }
 
 void init() {
+    gettimeofday(&lastTime, NULL);
     initScreen();
     glClearColor(0, 0, 0, 0);
     gluOrtho2D(0, WIDTH, HEIGHT, 0);
