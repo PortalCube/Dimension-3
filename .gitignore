@@ -1,5 +1,6 @@
 .vscode
 include
 lib
+freeglut.dll
 glut32.dll
 tempCodeRunnerFile.cpp
